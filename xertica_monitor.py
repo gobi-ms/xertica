@@ -119,16 +119,21 @@ if USE_SECRETS_MANAGER and SECRET_NAME:
 
 def env_bool(name: str, default=False) -> bool:
     v = os.getenv(name, str(default)).strip().lower()
-    return v in ("1", "true", "yes", "y", "on")
+    if v is not None and str(v).strip() != "":
+        return str(v)
+    if default:
+        print(f"Warning: {name} not set; falling back to default.")
+    return default
 
 LOGIN_URL         = os.getenv("LOGIN_URL", "https://service.xertica.cloud/dashboard")
-OPSNOW_USERNAME    = os.getenv("OPSNOW_USERNAME", "jaeyong.heo@bespinglobal.com")
-OPSNOW_PASSWORD    = os.getenv("OPSNOW_PASSWORD", "1qaz@WSX##")
-XERTICA_USERNAME   = os.getenv("XERTICA_USERNAME", "")
-XERTICA_PASSWORD   = os.getenv("XERTICA_PASSWORD", "")
+OPSNOW_USERNAME  = env_with_fallback("OPSNOW_USERNAME",  "jaeyong.heo@bespinglobal.com")
+OPSNOW_PASSWORD  = env_with_fallback("OPSNOW_PASSWORD",  "1qaz@WSX##")
+XERTICA_USERNAME = env_with_fallback("XERTICA_USERNAME", OPSNOW_USERNAME)
+XERTICA_PASSWORD = env_with_fallback("XERTICA_PASSWORD", OPSNOW_PASSWORD)
 
-USERNAME = OPSNOW_USERNAME
-PASSWORD = OPSNOW_PASSWORD
+
+USERNAME = XERTICA_USERNAME
+PASSWORD = XERTICA_PASSWORD
 DEFAULT_SITE = "Xertica"
 DEFAULT_COMPANY = "Xertica Clientes por reconocer"
 
@@ -1178,4 +1183,5 @@ if __name__ == "__main__":
                 shutil.rmtree(TEMP_PROFILE_DIR, ignore_errors=True)
         except Exception:
             pass
+
 
