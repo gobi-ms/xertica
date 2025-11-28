@@ -18,9 +18,9 @@ COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
 # App files
-COPY global_monitor.py ./global_monitor.py
+COPY xertica_monitor.py ./xertica_monitor.py
 RUN mkdir -p src/global
-COPY global_config.yaml ./src/global/global_config.yaml
+COPY xertica_config.yaml ./src/xertica/xertica_config.yaml
 
 # Default env (you can override in docker run)
 ENV AWS_REGION=ap-northeast-2 \
@@ -29,4 +29,5 @@ ENV AWS_REGION=ap-northeast-2 \
     SECRET_NAME=arn:aws:secretsmanager:ap-northeast-2:702147360356:secret:qobs/healthcheck-fwN15E
 
 # Run the script
-CMD ["python", "global_monitor.py"]
+CMD ["python", "xertica_monitor.py"]
+
