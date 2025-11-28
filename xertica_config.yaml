@@ -1,0 +1,82 @@
+runtime:
+  headless: false
+  timeout: 120
+  render_retry: 15
+  locator_debug: true
+
+reporting:
+  excel_file_prefix: "global_health_check_report"
+
+driver:
+  chromedriver_version: ""
+  chromedriver_path: ""
+  chrome_user_data_dir: ""
+
+metadata_by_url:
+  # ---------- Xertica ----------
+  "https://service.xertica.cloud/dashboard":         { service: "Portal",    menu: "Dashboard", site: "Xertica", company: "Xertica Clientes por reconocer" }
+  "https://asset.xertica.cloud/#/dashboard":         { service: "Asset",     menu: "Summary",   site: "Xertica", company: "Xertica Clientes por reconocer" }
+  "https://asset.xertica.cloud/asset/usage":         { service: "Asset",     menu: "Usage",     site: "Xertica", company: "Xertica Clientes por reconocer" }
+  "https://asset.xertica.cloud/asset/scheduler":     { service: "Asset",     menu: "Resource Scheduler", site: "Xertica", company: "Xertica Clientes por reconocer" }
+  "https://metering.xertica.cloud/dashboard":        { service: "Cost",      menu: "Summary",   site: "Xertica", company: "Xertica Clientes por reconocer" }
+  "https://metering.xertica.cloud/cost/billing":     { service: "Cost",      menu: "Billing",   site: "Xertica", company: "Xertica Clientes por reconocer" }
+  "https://governance.xertica.cloud/dashboard":      { service: "Governance", menu: "Summary",  site: "Xertica", company: "Xertica Clientes por reconocer" }
+
+checks:
+  # ---------- Xertica checks ----------
+  - name: "Asset Management card > Server count (Xertica)"
+    url: "https://service.xertica.cloud/dashboard"
+    type: value_required
+    locators:
+      - { kind: xpath, value: "//h3[normalize-space(.)='SERVER']/following::strong[1]" }
+
+  - name: "Cost Management card > Current Cost (Xertica)"
+    url: "https://service.xertica.cloud/dashboard"
+    type: value_required
+    locators:
+      - { kind: xpath, value: "//h3[normalize-space(.)='Current Cost']/following::span[contains(@class,'cost')][1]" }
+
+  - name: "Total Summary > Total Server count (Xertica)"
+    url: "https://asset.xertica.cloud/#/dashboard"
+    type: value_required
+    locators:
+      - { kind: xpath, value: "//span[contains(@class,'key') and contains(., 'Total Server')]/ancestor::dt[contains(@class,'count-item')]//em[@class='value']" }
+    js_fallback:
+    strategy: scan_labels
+    label_keys:
+      - "total server"
+      - "total servers"
+      - "server"
+      - "servers"
+
+  - name: "Usage (Current) > GCP VM Instance item visible (Xertica)"
+    url: "https://asset.xertica.cloud/asset/usage"
+    type: element_exists
+    locators:
+      - { kind: xpath, value: "//div[@id=\"product-dropdown\"]//span[normalize-space(.)=\"VM Instance\"]" }
+
+  - name: "Scheduler > '+ Add' button exists (Xertica)"
+    url: "https://asset.xertica.cloud/asset/scheduler"
+    type: element_exists
+    locators:
+      - { kind: xpath, value: "//button[contains(@class,'btn-primary') and (contains(normalize-space(.),'Add') or contains(normalize-space(.), '+ Add'))]" }
+
+  - name: "MTD Cost card > Cost value exists (Xertica)"
+    url: "https://metering.xertica.cloud/dashboard"
+    type: value_required
+    locators:
+      - { kind: xpath, value: "//h2[normalize-space(.)='Summary']/following::strong[contains(@class,'txt-cost') and contains(@class,'total')][1]" }
+
+  - name: "Billing Summary > Total value exists (Xertica)"
+    url: "https://metering.xertica.cloud/cost/billing"
+    type: value_required
+    locators:
+      - { kind: xpath, value: "//div[contains(@class,'summary-content')]//h6[normalize-space(.)='Total']/following::h5[contains(@class,'-number-l')][1]" }
+
+  - name: "Governance Summary > Scan Scores value exists (Xertica)"
+    url: "https://governance.xertica.cloud/dashboard"
+    type: value_required
+    locators:
+      - { kind: xpath, value: "//div[contains(@class,'compliance-summary')]//strong[contains(@class,'score')]" }
+
+

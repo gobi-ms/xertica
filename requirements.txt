@@ -1,0 +1,12 @@
+# Core
+pandas==2.2.2
+requests==2.32.3
+PyYAML==6.0.2
+python-dotenv==1.0.1
+selenium==4.24.0
+webdriver-manager==4.0.2
+openpyxl==3.1.5
+
+# AWS SDK — keep minor lines aligned
+boto3==1.40.52
+urllib3<3
